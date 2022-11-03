@@ -11,41 +11,27 @@ import java.util.ArrayList;
 public class Quotes {
 
     private record Quote(ArrayList<String> tags, String author, String likes, String text) {}
+
     public InputStream readFileFromResources(String name) throws IOException {
         return this.getClass().getClassLoader().getResourceAsStream(name);
     }
 
-    public ArrayList<Quote> parseJson(JsonReader jr) throws IOException {
+    public ArrayList<Quote> parseJson(InputStreamReader isr) throws IOException {
+        Gson gson = new Gson();
+        JsonReader jr = gson.newJsonReader(isr);
+        ArrayList<Quote> quotes = new ArrayList<>();
         jr.beginArray();
-        ArrayList<Quote> output = new ArrayList<>();
         while (jr.hasNext()) {
-            jr.beginObject();
-            jr.nextName();
-            jr.beginArray();
-            ArrayList<String> tagVals = new ArrayList<>();
-            while (jr.hasNext()) {
-                tagVals.add(jr.nextString());
-            }
-            jr.endArray();
-            jr.nextName();
-            String authorVal = jr.nextString();
-            jr.nextName();
-            String likesVal = jr.nextString();
-            jr.nextName();
-            String text = jr.nextString();
-            jr.endObject();
-
-            Quote q = new Quote(tagVals, authorVal, likesVal, text);
-            output.add(q);
+            Quote q = gson.fromJson(jr, Quote.class);
+            quotes.add(q);
         }
         jr.endArray();
-        return output;
+        return quotes;
     }
+
     public void openFileReaderOnResourceStream(InputStream is) throws IOException {
         InputStreamReader isr = new InputStreamReader(is);
-        Gson gson = new Gson();
-        JsonReader jsonRdr = gson.newJsonReader(isr);
-        ArrayList<Quote> js = parseJson(jsonRdr);
+        ArrayList<Quote> js = parseJson(isr);
         int rand = (int) Math.floor(Math.random() * js.size());
         Quote q = js.get(rand);
         System.out.println(q.author + ":\n" + q.text);
