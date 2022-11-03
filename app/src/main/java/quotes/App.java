@@ -3,12 +3,19 @@
  */
 package quotes;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        Quotes q = new Quotes();
+        try {
+            InputStream is = q.readFileFromResources("quotes.json");
+            q.openFileReaderOnResourceStream(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
