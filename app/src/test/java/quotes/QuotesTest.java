@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 
 import quotes.Quotes;
 
@@ -32,5 +33,10 @@ public class QuotesTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @Test void testForSwansonJson() throws IOException {
+        HttpURLConnection connection = RonSwansonAPI.createConnection("http://ron-swanson-quotes.herokuapp.com/v2/quotes");
+        String result = RonSwansonAPI.readFromConnection(connection);
+        assertEquals("test", Quotes.swansonJson(result));
     }
 }

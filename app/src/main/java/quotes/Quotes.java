@@ -36,4 +36,11 @@ public class Quotes {
         Quote q = js.get(rand);
         System.out.println(q.author + ":\n" + q.text);
     }
+
+    public static String swansonJson(String input) {
+        Gson gson = new Gson();
+        ArrayList jr = gson.fromJson(input, ArrayList.class);
+        return jr.get(0).toString();
+    }
+
 }
