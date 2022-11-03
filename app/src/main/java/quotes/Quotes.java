@@ -10,8 +10,7 @@ import java.util.ArrayList;
 
 public class Quotes {
 
-    private record Quote(ArrayList<String> tags, String author, String likes, String text) {
-    }
+    private record Quote(ArrayList<String> tags, String author, String likes, String text) {}
     public InputStream readFileFromResources(String name) throws IOException {
         return this.getClass().getClassLoader().getResourceAsStream(name);
     }
