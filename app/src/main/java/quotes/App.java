@@ -3,19 +3,43 @@
  */
 package quotes;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 
 public class App {
 
     public static void main(String[] args) {
-        Quotes q = new Quotes();
+
         try {
-            InputStream is = q.readFileFromResources("quotes.json");
-            q.openFileReaderOnResourceStream(is);
+            printSwansonQuote();
         } catch (IOException e) {
-            e.printStackTrace();
+            Quotes q = new Quotes();
+            try {
+                InputStream is = q.readFileFromResources("quotes.json");
+                q.openFileReaderOnResourceStream(is);
+            } catch (IOException er) {
+                er.printStackTrace();
+            }
         }
+
+
     }
+
+    static void printSwansonQuote() throws IOException {
+        HttpURLConnection connection = RonSwansonAPI.createConnection("http://ron-swanson-quotes.herokuapp.com/v2/quotes");
+        String result = RonSwansonAPI.readFromConnection(connection);
+        String swansonQuote = Quotes.swansonJson(result);
+        File swansonQuoteFile = new File("app/src/main/resources/swanson.json");
+
+        try(FileWriter swansonFileWriter = new FileWriter(swansonQuoteFile)){
+            swansonFileWriter.write(swansonQuote);
+        }
+        System.out.println(swansonQuote);
+    }
+
+
 }
